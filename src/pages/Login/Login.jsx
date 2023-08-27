@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Button, TextField, Typography } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { $axios } from "../../lib/axios";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
@@ -13,8 +24,17 @@ const Login = () => {
     isError: false,
     errorMessage: "",
   });
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const navigate = useNavigate();
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <>
@@ -97,16 +117,45 @@ const Login = () => {
                 <div className="error-message">{formik.errors.email}</div>
               ) : null}
 
-              <TextField
-                label="Password"
-                type="password"
-                name="password"
-                {...formik.getFieldProps("password")}
-              />
+              <FormControl
+                fullWidth
+                error={Boolean(
+                  formik.touched.password && formik.errors.password
+                )}
+              >
+                <InputLabel htmlFor="outlined-adornment-password-register">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password-register"
+                  type={showPassword ? "text" : "password"}
+                  value={formik.values.password}
+                  name="password"
+                  label="Password"
+                  onBlur={formik.handleBlur}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                  }}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        size="large"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  inputProps={{}}
+                />
 
-              {formik.touched.password && formik.errors.password ? (
-                <div className="error-message">{formik.errors.password}</div>
-              ) : null}
+                {formik.touched.password && formik.errors.password ? (
+                  <div className="error-message">{formik.errors.password}</div>
+                ) : null}
+              </FormControl>
 
               <Button variant="contained" type="submit" disabled={loading}>
                 Login
