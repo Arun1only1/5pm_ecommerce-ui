@@ -2,13 +2,25 @@ import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Outlet } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 const MainLayout = () => {
   return (
-    <Box sx={{ height: "100vh", width: "100vw" }}>
+    <Box
+      sx={{
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
       <Header />
-      <Outlet />
+
+      <Grid
+        container
+        sx={{ minHeight: "74vh", display: "grid", placeItems: "center" }}
+      >
+        <Outlet />
+      </Grid>
+
       <Footer />
     </Box>
   );

@@ -71,10 +71,24 @@ const Login = () => {
               // extract accesstoken
               const accesstoken = response.data.access_token;
 
-              console.log(response);
-
               // save access token to local storage
               localStorage.setItem("accesstoken", accesstoken);
+
+              // user full name
+              const userName =
+                response?.data?.user?.firstName +
+                " " +
+                response?.data?.user?.lastName;
+
+              // save user name and role in local storage
+              localStorage.setItem(
+                "firstName",
+                response?.data?.user?.firstName
+              );
+
+              localStorage.setItem("lastName", response?.data?.user?.lastName);
+
+              localStorage.setItem("userRole", response?.data?.user?.role);
 
               // push to home page
               navigate("/");
@@ -107,6 +121,7 @@ const Login = () => {
                 Login
               </Typography>
               <TextField
+                fullWidth
                 label="Email"
                 variant="outlined"
                 name="email"

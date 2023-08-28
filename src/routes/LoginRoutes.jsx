@@ -1,9 +1,8 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+import AddProductForm from "../components/AddProductForm";
 import MainLayout from "../layout/MainLayout";
 import About from "../pages/About";
 import Home from "../pages/Home/Home";
-import Product from "../pages/BuyerProduct";
+import Product from "../pages/Product";
 
 const loginRoutes = [
   {
@@ -21,6 +20,10 @@ const loginRoutes = [
       {
         path: "products",
         element: <Product />,
+      },
+      {
+        path: "products/add",
+        element: <AddProductForm />,
       },
     ],
   },

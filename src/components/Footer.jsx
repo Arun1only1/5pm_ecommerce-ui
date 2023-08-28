@@ -13,10 +13,8 @@ const Footer = () => {
 export default Footer;
 
 const StyledFooterDiv = styled.div`
-  position: fixed;
-  bottom: 0;
   width: 100%;
-  height: 80px; /* Height of the footer */
+  height: 80px;
   background: #352f44;
   display: flex;
   justify-content: center;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { $axios } from "../lib/axios";
 
-const Product = () => {
+const BuyerProduct = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
 
@@ -31,7 +31,7 @@ const Product = () => {
   if (loading) {
     return <Loader />;
   }
-  return <div>Product</div>;
+  return <div>Buyer Product</div>;
 };
 
-export default Product;
+export default BuyerProduct;

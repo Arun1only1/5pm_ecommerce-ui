@@ -5,10 +5,12 @@ import { FaShoppingCart } from "react-icons/fa";
 import { styled } from "styled-components";
 
 const Header = () => {
+  const firstName = localStorage.getItem("firstName");
   return (
     <Box
       sx={{
-        padding: "2rem",
+        padding: "1rem",
+        width: "100%",
         background: "#FAF0E6",
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
@@ -75,6 +77,7 @@ const Header = () => {
             src="/avatar/sample_pic.jpeg"
             sx={{ width: 56, height: 56 }}
           />
+          <Typography>Hello {firstName}</Typography>
         </Grid>
       </Grid>
     </Box>
