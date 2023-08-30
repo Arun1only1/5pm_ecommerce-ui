@@ -5,7 +5,9 @@ import { styled } from "styled-components";
 const Footer = () => {
   return (
     <StyledFooterDiv>
-      <StyledTypography>Copyright Nepal Mart &#x40;2023</StyledTypography>
+      <StyledTypography>
+        2023 &copy; Nepal Mart <br /> All rights reserved
+      </StyledTypography>
     </StyledFooterDiv>
   );
 };
@@ -19,6 +21,7 @@ const StyledFooterDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 2rem;
 `;
 
 const StyledTypography = styled(Typography)`

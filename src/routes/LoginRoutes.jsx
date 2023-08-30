@@ -3,6 +3,7 @@ import MainLayout from "../layout/MainLayout";
 import About from "../pages/About";
 import Home from "../pages/Home/Home";
 import Product from "../pages/Product";
+import ProductDetail from "../pages/ProductDetail";
 
 const loginRoutes = [
   {
@@ -24,6 +25,10 @@ const loginRoutes = [
       {
         path: "products/add",
         element: <AddProductForm />,
+      },
+      {
+        path: "products/details/:id",
+        element: <ProductDetail />,
       },
     ],
   },
