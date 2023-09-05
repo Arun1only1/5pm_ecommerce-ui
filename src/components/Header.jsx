@@ -73,9 +73,10 @@ const Header = () => {
       </Popover>
       <Box
         sx={{
+          color: "#fff",
           padding: "1rem",
           width: "100%",
-          background: "#FAF0E6",
+          background: "#1976d2",
           boxShadow:
             "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
         }}
@@ -100,7 +101,7 @@ const Header = () => {
               src="/icons/nepal-mart-black.png"
               width={200}
               height={100}
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: "contain", color: "white" }}
             />
             <Typography variant="h4">Nepal mart</Typography>
           </Grid>
@@ -115,7 +116,9 @@ const Header = () => {
             }}
           >
             <Link to="/">
-              <StyledLink variant="h4">Home</StyledLink>
+              <StyledLink variant="h4" sx={{ color: "#9376E0" }}>
+                Home
+              </StyledLink>
             </Link>
             <Link to="/products">
               <StyledLink variant="h4">Products</StyledLink>
@@ -133,7 +136,7 @@ const Header = () => {
               gap: "3rem",
             }}
           >
-            <Badge badgeContent={4} color="primary">
+            <Badge badgeContent={4} color="secondary" size="large">
               <FaShoppingCart size={50} />
             </Badge>
             <Avatar
@@ -141,10 +144,10 @@ const Header = () => {
               src="/avatar/sample_pic.jpeg"
               sx={{ width: 56, height: 56 }}
             />
-            <Typography>Hello {firstName}</Typography>
+            <Typography variant="h6">Hello {firstName}</Typography>
             {/* TODO:ICON COLOR */}
-            <Button sx={{ color: "red" }} onClick={handleClick}>
-              <BiLogOut size={30} />
+            <Button sx={{ color: "#fff" }} onClick={handleClick}>
+              <BiLogOut size={35} />
             </Button>
           </Grid>
         </Grid>
@@ -156,5 +159,5 @@ const Header = () => {
 export default Header;
 
 const StyledLink = styled(Typography)`
-  color: #352f44;
+  color: #fff;
 `;

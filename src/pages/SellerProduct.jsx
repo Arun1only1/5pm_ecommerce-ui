@@ -1,18 +1,15 @@
-import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Button, Grid, Pagination } from "@mui/material";
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
-import ProductCard from "../components/ProductCard";
-import { $axios } from "../lib/axios";
 import CustomSnackbar from "../components/CustomSnackbar";
+import Loader from "../components/Loader";
 import NoItemFound from "../components/NoItemFound";
+import ProductCard from "../components/ProductCard";
+import { fetchSellerProducts } from "../lib/apis/product.apis";
 
-const SellerProduct = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+const SellerProduct = (props) => {
   const [page, setPage] = useState(1);
-  const [isItemDeleted, setIsItemDeleted] = useState(false);
 
   const navigate = useNavigate();
 
@@ -20,27 +17,17 @@ const SellerProduct = () => {
     setPage(data);
   };
 
-  const fetchSellerProducts = async () => {
-    try {
-      setLoading(true);
-      const response = await $axios.post("/product/seller/all", {
-        page,
-        limit: 10,
-      });
+  // query
+  const getSellerProductQuery = useQuery({
+    queryKey: ["seller-products", { page, searchText: props.searchText }],
+    queryFn: () =>
+      fetchSellerProducts({ page, limit: 10, searchText: props?.searchText }),
+    keepPreviousData: true,
+  });
 
-      setProducts(response.data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      setIsError(true);
-    }
-  };
+  console.log(getSellerProductQuery);
 
-  useEffect(() => {
-    fetchSellerProducts();
-  }, [page, isItemDeleted]);
-
-  if (loading) {
+  if (getSellerProductQuery.isLoading) {
     return <Loader />;
   }
   return (
@@ -51,20 +38,26 @@ const SellerProduct = () => {
           marginTop: "1rem",
           display: "flex",
           justifyContent: "flex-end",
+          marginBottom: "4rem",
         }}
       >
         <Grid item>
-          <Button variant="outlined" onClick={() => navigate("/products/add")}>
+          <Button
+            variant="contained"
+            onClick={() => navigate("/products/add")}
+            sx={{ marginRight: "5rem" }}
+          >
             Add product
           </Button>
         </Grid>
       </Grid>
       <CustomSnackbar
-        open={isError}
+        open={getSellerProductQuery.isError}
         status="error"
         message="Products cannot be fetched at this time."
       />
-      {!loading && products.length === 0 ? (
+      {!getSellerProductQuery.isLoading &&
+      getSellerProductQuery.data.data.products.length === 0 ? (
         <NoItemFound />
       ) : (
         <>
@@ -79,15 +72,8 @@ const SellerProduct = () => {
                 alignItems: "center",
               }}
             >
-              {products.map((item) => {
-                return (
-                  <ProductCard
-                    key={item._id}
-                    {...item}
-                    isItemDeleted={isItemDeleted}
-                    setIsItemDeleted={setIsItemDeleted}
-                  />
-                );
+              {getSellerProductQuery?.data?.data?.products?.map((item) => {
+                return <ProductCard key={item._id} {...item} />;
               })}
             </Grid>
             <Grid
@@ -98,7 +84,8 @@ const SellerProduct = () => {
               }}
             >
               <Pagination
-                count={10}
+                page={page}
+                count={getSellerProductQuery?.data?.data?.totalPage}
                 color="secondary"
                 size="large"
                 onChange={getPaginationData}
