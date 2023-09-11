@@ -1,42 +1,57 @@
-import React, { useEffect, useState } from "react";
-import Loader from "../components/Loader";
-import { $axios } from "../lib/axios";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 
-import { getBuyerProducts } from "../lib/apis/product.apis";
-import { Box, Button, Grid, Pagination } from "@mui/material";
+import { Box, Grid, Pagination } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import CustomSnackbar from "../components/CustomSnackbar";
 import NoItemFound from "../components/NoItemFound";
 import ProductCard from "../components/ProductCard";
+import { getBuyerProducts } from "../lib/apis/product.apis";
+import { openErrorSnackbar } from "../store/slices/snackbarSlice";
 
-const BuyerProduct = (props) => {
+const BuyerProduct = () => {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { searchText, minPrice, maxPrice, category } = useSelector(
+    (state) => state.product
+  );
 
   const { isLoading, error, isError, data } = useQuery({
-    queryKey: ["buyer-products", page, props.searchText],
+    queryKey: [
+      "buyer-products",
+      page,
+      searchText,
+      minPrice,
+      maxPrice,
+      category,
+    ],
     queryFn: () =>
       getBuyerProducts({
         page,
-        limit: 10,
-        searchText: props?.searchText || "",
+        limit: 9,
+        searchText: searchText || "",
+        minPrice: minPrice || 0,
+        maxPrice: maxPrice || 0,
+        category,
       }),
   });
-
-  console.log(data);
 
   const getPaginationData = (event, data) => {
     setPage(data);
   };
 
+  if (isError) {
+    dispatch(
+      openErrorSnackbar(
+        error?.response?.data?.message || "Products cannot be fetched."
+      )
+    );
+  }
+
   return (
     <Box sx={{ marginTop: "2rem" }}>
-      <CustomSnackbar
-        open={isError}
-        status="error"
-        message="Products cannot be fetched at this time."
-      />
       {!isLoading && data?.data?.products?.length === 0 ? (
         <NoItemFound />
       ) : (
@@ -53,7 +68,7 @@ const BuyerProduct = (props) => {
               }}
             >
               {data?.data?.products?.map((item) => {
-                return <ProductCard key={item._id} {...item} />;
+                return <ProductCard {...item} key={item._id} />;
               })}
             </Grid>
             <Grid

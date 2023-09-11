@@ -16,7 +16,7 @@ import { BiLogOut } from "react-icons/bi";
 
 const Header = () => {
   const navigate = useNavigate();
-  const firstName = localStorage.getItem("firstName");
+  const userName = localStorage.getItem("userName");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -115,7 +115,7 @@ const Header = () => {
               gap: "5rem",
             }}
           >
-            <Link to="/">
+            <Link to="/home">
               <StyledLink variant="h4" sx={{ color: "#9376E0" }}>
                 Home
               </StyledLink>
@@ -144,7 +144,7 @@ const Header = () => {
               src="/avatar/sample_pic.jpeg"
               sx={{ width: 56, height: 56 }}
             />
-            <Typography variant="h6">Hello {firstName}</Typography>
+            <Typography variant="h6">Hello {userName}</Typography>
             {/* TODO:ICON COLOR */}
             <Button sx={{ color: "#fff" }} onClick={handleClick}>
               <BiLogOut size={35} />

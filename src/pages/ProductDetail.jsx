@@ -1,14 +1,18 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { $axios } from "../lib/axios";
 import Loader from "../components/Loader";
 import { GrAdd } from "react-icons/gr";
 import { AiOutlineMinus } from "react-icons/ai";
+import { useMutation } from "react-query";
+import { addItemToCart } from "../lib/apis/cart.api";
 const ProductDetail = () => {
   const userRole = localStorage.getItem("userRole");
   const [productDetail, setProductDetail] = useState({});
   const [counter, setCounter] = useState(1);
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +20,11 @@ const ProductDetail = () => {
   const params = useParams();
 
   const productId = params.id;
+
+  const addItemToCartMutation = useMutation({
+    mutationKey: ["add-item-to-cart"],
+    mutationFn: () => addItemToCart({ productId, quantity: counter }),
+  });
 
   const getProductDetails = async () => {
     try {
@@ -121,7 +130,14 @@ const ProductDetail = () => {
               </Button>
             </Grid>
             <Grid item>
-              <Button variant="contained" size="large">
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => {
+                  addItemToCartMutation.mutate();
+                  navigate("/cart");
+                }}
+              >
                 Add to cart
               </Button>
             </Grid>

@@ -1,13 +1,15 @@
+import { Box, Button, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
-import SellerProduct from "./SellerProduct";
+import ProductFilter from "../components/ProductFilter";
 import BuyerProduct from "./BuyerProduct";
-import { Box, Grid, InputAdornment, TextField } from "@mui/material";
-import { AiOutlineSearch } from "react-icons/ai";
+import SellerProduct from "./SellerProduct";
+import { useDispatch } from "react-redux";
+import { resetFilter, setSearchText } from "../store/slices/productSlice";
 
 const Product = () => {
-  const [searchText, setSearchText] = useState("");
-
   const role = localStorage.getItem("userRole");
+
+  const dispatch = useDispatch();
 
   return (
     <Box sx={{ width: "100%", minHeight: "70vh" }}>
@@ -16,12 +18,20 @@ const Product = () => {
           display: "flex",
           justifyContent: "flex-end",
           marginTop: "2rem",
-          marginRight: "4rem",
+          marginRight: "7rem",
+          alignItems: "center",
+          gap: "2rem",
         }}
       >
+        <Button variant="contained" onClick={() => dispatch(resetFilter())}>
+          Clear Filter
+        </Button>
+        <ProductFilter />
+
         <TextField
+          sx={{ width: "20vw" }}
           placeholder="Search"
-          onChange={(event) => setSearchText(event.target.value)}
+          onChange={(event) => dispatch(setSearchText(event.target.value))}
           // TODO:place icon here
           // startAdornment={
           //   <InputAdornment position="start">
@@ -31,11 +41,7 @@ const Product = () => {
         />
       </Grid>
 
-      {role === "seller" ? (
-        <SellerProduct searchText={searchText} />
-      ) : (
-        <BuyerProduct searchText={searchText} />
-      )}
+      {role === "seller" ? <SellerProduct /> : <BuyerProduct />}
     </Box>
   );
 };

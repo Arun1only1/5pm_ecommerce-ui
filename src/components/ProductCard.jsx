@@ -89,8 +89,13 @@ export default function ProductCard(props) {
           component="img"
           alt="green iguana"
           height="140"
-          image="https://m.media-amazon.com/images/I/71S5dyn7GQL._AC_SL1500_.jpg"
-          sx={{ objectFit: "contain", cursor: "pointer", padding: "1rem" }}
+          image="https://www.rei.com/dam/content_team_010818_52427_htc_running_shoes_hero2_lg.jpg?t=ea16by9xs"
+          sx={{
+            objectFit: "contain",
+            cursor: "pointer",
+            padding: "1rem",
+            width: "100%",
+          }}
         />
         <CardContent>
           <div

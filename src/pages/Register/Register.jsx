@@ -8,28 +8,36 @@ import {
   Typography,
 } from "@mui/material";
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { $axios } from "../../lib/axios";
-import CustomSnackbar from "../../components/CustomSnackbar";
+import { useMutation } from "react-query";
+import { registerUser } from "../../lib/apis/user.api";
+import { useDispatch } from "react-redux";
+import { openErrorSnackbar } from "../../store/slices/snackbarSlice";
 
 const Register = () => {
-  const [errorInfo, setErrorInfo] = useState({
-    isError: false,
-    errorMessage: "",
+  const navigate = useNavigate();
+  // register mutation
+  const registerMutation = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (values) => registerUser(values),
+    onSuccess: () => {
+      navigate("/login");
+    },
   });
 
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  if (registerMutation.isError) {
+    dispatch(
+      openErrorSnackbar(registerMutation?.error?.response?.data?.message)
+    );
+  }
 
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
-      <CustomSnackbar
-        open={errorInfo.isError}
-        status="error"
-        message={errorInfo.errorMessage}
-      />
       <Formik
         initialValues={{
           email: "",
@@ -84,23 +92,7 @@ const Register = () => {
           ),
         })}
         onSubmit={async (values) => {
-          setLoading(true);
-          // api hit
-          try {
-            const response = await $axios.post("/user/register", values);
-
-            setLoading(false);
-
-            // route to login
-            navigate("/login");
-          } catch (error) {
-            setErrorInfo({
-              isError: true,
-              errorMessage: error.response.data.message,
-            });
-
-            setLoading(false);
-          }
+          registerMutation.mutate(values);
         }}
       >
         {({ errors, handleSubmit, touched, getFieldProps }) => (
@@ -188,7 +180,7 @@ const Register = () => {
               variant="contained"
               type="submit"
               sx={{ marginTop: "1rem" }}
-              disabled={loading}
+              disabled={registerMutation.isLoading}
             >
               Register
             </Button>

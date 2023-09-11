@@ -1,6 +1,7 @@
 import AddProductForm from "../components/AddProductForm";
 import MainLayout from "../layout/MainLayout";
 import About from "../pages/About";
+import Cart from "../pages/Cart";
 import Home from "../pages/Home/Home";
 import Product from "../pages/Product";
 import ProductDetail from "../pages/ProductDetail";
@@ -11,7 +12,7 @@ const loginRoutes = [
     element: <MainLayout />,
     children: [
       {
-        path: "",
+        path: "home",
         element: <Home />,
       },
       {
@@ -29,6 +30,10 @@ const loginRoutes = [
       {
         path: "products/details/:id",
         element: <ProductDetail />,
+      },
+      {
+        path: "cart",
+        element: <Cart />,
       },
     ],
   },

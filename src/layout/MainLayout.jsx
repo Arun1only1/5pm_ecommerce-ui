@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Outlet } from "react-router-dom";
 import { Box, Grid } from "@mui/material";
+import CustomSnackbar from "../components/CustomSnackbar";
 
 const MainLayout = () => {
   return (
@@ -12,6 +13,7 @@ const MainLayout = () => {
         placeItems: "center",
       }}
     >
+      <CustomSnackbar />
       <Header />
 
       <Grid

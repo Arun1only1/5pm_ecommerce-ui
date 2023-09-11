@@ -1,14 +1,21 @@
 import Register from "../pages/Register/Register";
 import Login from "../pages/Login/Login";
+import MinimumLayout from "../layout/MinimumLayout";
 
 const guestRoutes = [
   {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
+    path: "/",
+    element: <MinimumLayout />,
+    children: [
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+    ],
   },
 ];
 

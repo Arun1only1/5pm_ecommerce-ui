@@ -6,21 +6,21 @@ import {
   Grid,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
-import Chip from "@mui/material/Chip";
 import { Formik } from "formik";
 import React from "react";
-import * as Yup from "yup";
-import { useTheme } from "@mui/material/styles";
-import { $axios } from "../lib/axios";
-import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import { addProductBySeller } from "../lib/apis/product.apis";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbarSlice";
 import Loader from "./Loader";
-import CustomSnackbar from "./CustomSnackbar";
 
 const productCategories = [
   "grocery",
@@ -36,11 +36,20 @@ const productCategories = [
 const AddProductForm = () => {
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
   const addProductMutation = useMutation({
     mutationKey: ["add-product"],
     mutationFn: (values) => addProductBySeller(values),
-    onSuccess: () => {
+    onSuccess: (res) => {
       navigate("/products");
+      dispatch(openSuccessSnackbar(res?.data?.message));
+    },
+    onError: (error) => {
+      dispatch(
+        openErrorSnackbar(
+          error?.response?.data?.message || "Something went wrong."
+        )
+      );
     },
   });
 
@@ -52,13 +61,6 @@ const AddProductForm = () => {
 
   return (
     <>
-      <CustomSnackbar
-        open={addProductMutation.isError}
-        status="error"
-        message={
-          addProductMutation?.error?.response?.data || "Something went wrong"
-        }
-      />
       <Box
         sx={{
           display: "flex",

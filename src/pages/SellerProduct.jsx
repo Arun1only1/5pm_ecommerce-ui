@@ -1,17 +1,21 @@
 import { Box, Button, Grid, Pagination } from "@mui/material";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import CustomSnackbar from "../components/CustomSnackbar";
 import Loader from "../components/Loader";
 import NoItemFound from "../components/NoItemFound";
 import ProductCard from "../components/ProductCard";
 import { fetchSellerProducts } from "../lib/apis/product.apis";
+import { openErrorSnackbar } from "../store/slices/snackbarSlice";
 
-const SellerProduct = (props) => {
+const SellerProduct = () => {
   const [page, setPage] = useState(1);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  const { searchText } = useSelector((state) => state.product);
 
   const getPaginationData = (event, data) => {
     setPage(data);
@@ -19,13 +23,15 @@ const SellerProduct = (props) => {
 
   // query
   const getSellerProductQuery = useQuery({
-    queryKey: ["seller-products", { page, searchText: props.searchText }],
+    queryKey: ["seller-products", { page, searchText: searchText }],
     queryFn: () =>
-      fetchSellerProducts({ page, limit: 10, searchText: props?.searchText }),
+      fetchSellerProducts({ page, limit: 10, searchText: searchText || "" }),
     keepPreviousData: true,
   });
 
-  console.log(getSellerProductQuery);
+  if (getSellerProductQuery?.isError) {
+    dispatch(openErrorSnackbar("Product cannot be fetched at this time."));
+  }
 
   if (getSellerProductQuery.isLoading) {
     return <Loader />;
@@ -51,11 +57,7 @@ const SellerProduct = (props) => {
           </Button>
         </Grid>
       </Grid>
-      <CustomSnackbar
-        open={getSellerProductQuery.isError}
-        status="error"
-        message="Products cannot be fetched at this time."
-      />
+
       {!getSellerProductQuery.isLoading &&
       getSellerProductQuery.data.data.products.length === 0 ? (
         <NoItemFound />

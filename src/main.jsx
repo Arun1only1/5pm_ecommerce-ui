@@ -6,6 +6,8 @@ import "./index.css";
 import guestRoutes from "./routes/GuestRoutes";
 import loginRoutes from "./routes/LoginRoutes";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Provider } from "react-redux";
+import store from "./store";
 
 const queryClient = new QueryClient();
 
@@ -16,8 +18,9 @@ const router = createBrowserRouter(applicationRoutes);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      {/* <ReactQueryDevtools /> */}
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </QueryClientProvider>
   </React.StrictMode>
 );
