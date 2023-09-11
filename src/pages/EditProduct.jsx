@@ -11,38 +11,38 @@ import {
 } from "@mui/material";
 import { Formik } from "formik";
 import React from "react";
-import { useMutation } from "react-query";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import { addProductBySeller } from "../lib/apis/product.apis";
-import {
-  openErrorSnackbar,
-  openSuccessSnackbar,
-} from "../store/slices/snackbarSlice";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
+import { productCategories } from "../constants/enums";
+import { editProduct, getProductDetails } from "../lib/apis/product.apis";
+import { useDispatch } from "react-redux";
+import { openErrorSnackbar } from "../store/slices/snackbarSlice";
 
-const productCategories = [
-  "grocery",
-  "kitchen",
-  "clothing",
-  "electronics",
-  "furniture",
-  "cosmetics",
-  "bakery",
-  "liquor",
-];
-
-const AddProductForm = () => {
+const EditProduct = () => {
+  const params = useParams();
   const navigate = useNavigate();
-
+  const productId = params.id;
   const dispatch = useDispatch();
-  const addProductMutation = useMutation({
-    mutationKey: ["add-product"],
-    mutationFn: (values) => addProductBySeller(values),
-    onSuccess: (res) => {
-      navigate("/products");
-      dispatch(openSuccessSnackbar(res?.data?.message));
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["get-product-details", productId],
+    queryFn: () => getProductDetails(productId),
+    onError: (error) => {
+      dispatch(
+        openErrorSnackbar(
+          error?.response?.data?.message || "Something went wrong."
+        )
+      );
+    },
+  });
+
+  const editProductMutation = useMutation({
+    mutationKey: ["edit-product"],
+    mutationFn: (values) => editProduct(productId, values),
+    onSuccess: () => {
+      navigate(`/products/details/${productId}`);
     },
     onError: (error) => {
       dispatch(
@@ -53,7 +53,9 @@ const AddProductForm = () => {
     },
   });
 
-  if (addProductMutation.isLoading) {
+  const productDetails = data?.data;
+
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -66,18 +68,6 @@ const AddProductForm = () => {
         alignItems: "center",
       }}
     >
-      <Button
-        variant="contained"
-        sx={{
-          padding: "8px",
-          fontSize: "1rem",
-          marginTop: "2rem",
-          width: "30%",
-        }}
-        onClick={() => navigate("/products")}
-      >
-        Back to product page
-      </Button>
       <Box
         sx={{
           margin: "5rem",
@@ -90,13 +80,14 @@ const AddProductForm = () => {
         }}
       >
         <Formik
+          enableReinitialize
           initialValues={{
-            name: "",
-            company: "",
-            price: 0,
-            freeShipping: false,
-            quantity: 0,
-            category: "",
+            name: productDetails?.name || "Hello",
+            company: productDetails?.company || "",
+            price: productDetails?.price || 0,
+            freeShipping: productDetails?.freeShipping || false,
+            quantity: productDetails?.quantity || 0,
+            category: productDetails?.category || "",
           }}
           validationSchema={Yup.object({
             name: Yup.string()
@@ -122,8 +113,8 @@ const AddProductForm = () => {
               .required("Category is required.")
               .oneOf(productCategories),
           })}
-          onSubmit={async (values) => {
-            addProductMutation.mutate(values);
+          onSubmit={(values) => {
+            editProductMutation.mutate(values);
           }}
         >
           {({ handleSubmit, getFieldProps, errors, touched, values }) => (
@@ -219,7 +210,6 @@ const AddProductForm = () => {
                 />
               </Grid>
 
-              {/* {console.log({ values })} */}
               <Button
                 type="submit"
                 variant="contained"
@@ -235,4 +225,4 @@ const AddProductForm = () => {
   );
 };
 
-export default AddProductForm;
+export default EditProduct;

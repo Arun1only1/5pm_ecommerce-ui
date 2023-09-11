@@ -23,10 +23,14 @@ const Product = () => {
           gap: "2rem",
         }}
       >
-        <Button variant="contained" onClick={() => dispatch(resetFilter())}>
-          Clear Filter
-        </Button>
-        <ProductFilter />
+        {role === "buyer" && (
+          <>
+            <Button variant="contained" onClick={() => dispatch(resetFilter())}>
+              Clear Filter
+            </Button>
+            <ProductFilter />
+          </>
+        )}
 
         <TextField
           sx={{ width: "20vw" }}
