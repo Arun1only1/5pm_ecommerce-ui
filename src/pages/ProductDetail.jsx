@@ -135,7 +135,6 @@ const ProductDetail = () => {
                 size="large"
                 onClick={() => {
                   addItemToCartMutation.mutate();
-                  navigate("/cart");
                 }}
               >
                 Add to cart

@@ -34,6 +34,7 @@ const Login = () => {
       localStorage.setItem("accesstoken", res?.data?.access_token);
       localStorage.setItem("userRole", res?.data?.user?.role);
       localStorage.setItem("userName", res?.data?.user?.firstName);
+      localStorage.setItem("isLoggedIn", true);
       navigate("/home");
       dispatch(openSuccessSnackbar("You are logged in successfully."));
     },
@@ -149,6 +150,7 @@ const Login = () => {
                 variant="contained"
                 type="submit"
                 disabled={loginMutation.isLoading}
+                sx={{ width: "100%" }}
               >
                 Login
               </Button>

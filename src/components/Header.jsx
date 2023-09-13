@@ -17,6 +17,7 @@ import { BiLogOut } from "react-icons/bi";
 const Header = () => {
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName");
+  const userRole = localStorage.getItem("userRole");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -136,9 +137,14 @@ const Header = () => {
               gap: "3rem",
             }}
           >
-            <Badge badgeContent={4} color="secondary" size="large">
-              <FaShoppingCart size={50} />
-            </Badge>
+            {userRole === "buyer" && (
+              <Box sx={{ cursor: "pointer" }} onClick={() => navigate("/cart")}>
+                <Badge badgeContent={4} color="secondary" size="large">
+                  <FaShoppingCart size={50} />
+                </Badge>
+              </Box>
+            )}
+
             <Avatar
               alt="Remy Sharp"
               src="/avatar/sample_pic.jpeg"

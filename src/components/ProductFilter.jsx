@@ -197,11 +197,6 @@ export default function ProductFilter() {
 }
 
 const StyledButton = styled(Button)`
-  padding: 1rem;
-  margin: 1rem;
+  min-width: 3rem;
   background-color: red;
-`;
-
-const StyledTitle = styled(Typography)`
-  font-size: 200px;
 `;

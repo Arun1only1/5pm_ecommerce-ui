@@ -4,14 +4,14 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import guestRoutes from "./routes/GuestRoutes";
-import loginRoutes from "./routes/LoginRoutes";
+import mainRoutes from "./routes/MainRoutes";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "react-redux";
 import store from "./store";
 
 const queryClient = new QueryClient();
 
-const applicationRoutes = [...guestRoutes, ...loginRoutes];
+const applicationRoutes = [...guestRoutes, ...mainRoutes];
 
 const router = createBrowserRouter(applicationRoutes);
 

@@ -1,4 +1,5 @@
 import AddProductForm from "../components/AddProductForm";
+import AuthGuard from "../guard/AuthGuard";
 import MainLayout from "../layout/MainLayout";
 import About from "../pages/About";
 import Cart from "../pages/Cart";
@@ -7,10 +8,14 @@ import Home from "../pages/Home/Home";
 import Product from "../pages/Product";
 import ProductDetail from "../pages/ProductDetail";
 
-const loginRoutes = [
+const mainRoutes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         path: "home",
@@ -41,4 +46,4 @@ const loginRoutes = [
   },
 ];
 
-export default loginRoutes;
+export default mainRoutes;

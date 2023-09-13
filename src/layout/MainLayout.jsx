@@ -8,6 +8,7 @@ import CustomBreadCrumb from "../components/CustomBreadcrumb";
 import { useBreadcrumbTitle } from "../custom-hook/useBreadCrumbTitle";
 import { useDispatch } from "react-redux";
 import { setBreadCrumb } from "../store/slices/breadcrumbSlice";
+import AuthGuard from "../guard/AuthGuard";
 
 const MainLayout = () => {
   const location = useLocation();
@@ -21,10 +22,12 @@ const MainLayout = () => {
 
   return (
     <Box
-      sx={{
-        display: "grid",
-        placeItems: "center",
-      }}
+      sx={
+        {
+          // display: "grid",
+          // placeItems: "center",
+        }
+      }
     >
       <CustomSnackbar />
       <Header />
