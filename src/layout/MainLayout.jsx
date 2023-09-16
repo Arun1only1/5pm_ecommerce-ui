@@ -9,6 +9,7 @@ import { useBreadcrumbTitle } from "../custom-hook/useBreadCrumbTitle";
 import { useDispatch } from "react-redux";
 import { setBreadCrumb } from "../store/slices/breadcrumbSlice";
 import AuthGuard from "../guard/AuthGuard";
+import CustomAppBar from "../components/CusotmAppBar";
 
 const MainLayout = () => {
   const location = useLocation();
@@ -21,22 +22,13 @@ const MainLayout = () => {
   }, [data, dispatch]);
 
   return (
-    <Box
-      sx={
-        {
-          // display: "grid",
-          // placeItems: "center",
-        }
-      }
-    >
+    <Box>
       <CustomSnackbar />
-      <Header />
+
+      <CustomAppBar />
       <CustomBreadCrumb />
 
-      <Grid
-        container
-        sx={{ minHeight: "74vh", display: "grid", placeItems: "center" }}
-      >
+      <Grid container sx={{ minHeight: "65vh" }}>
         <Outlet />
       </Grid>
 

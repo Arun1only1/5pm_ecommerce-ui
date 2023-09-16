@@ -7,10 +7,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   TextField,
+  TextareaAutosize,
 } from "@mui/material";
 import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
@@ -19,8 +21,14 @@ import { productCategories } from "../constants/enums";
 import { editProduct, getProductDetails } from "../lib/apis/product.apis";
 import { useDispatch } from "react-redux";
 import { openErrorSnackbar } from "../store/slices/snackbarSlice";
+import axios from "axios";
+import { placeHolderImage } from "../constants/general.constant";
 
 const EditProduct = () => {
+  const [localURL, setLocalURL] = useState(null);
+  const [productImage, setProductImage] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+
   const params = useParams();
   const navigate = useNavigate();
   const productId = params.id;
@@ -66,12 +74,14 @@ const EditProduct = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+
+        width: "100%",
       }}
     >
       <Box
         sx={{
           margin: "5rem",
-          width: "400px",
+          width: "550px",
 
           padding: "10px",
           borderRadius: "10px",
@@ -88,6 +98,7 @@ const EditProduct = () => {
             freeShipping: productDetails?.freeShipping || false,
             quantity: productDetails?.quantity || 0,
             category: productDetails?.category || "",
+            description: productDetails?.description || "",
           }}
           validationSchema={Yup.object({
             name: Yup.string()
@@ -112,8 +123,37 @@ const EditProduct = () => {
               .trim()
               .required("Category is required.")
               .oneOf(productCategories),
+            description: Yup.string()
+              .min(200, "Description must be at least 200 characters.")
+              .max(1000, "Description must be at most 1000 characters.")
+              .required("Description is required."),
           })}
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
+            let imageUrl = "";
+            if (productImage) {
+              const cloudName = "dlkcko4n6";
+              // creates form data object
+              const data = new FormData();
+              data.append("file", productImage);
+              data.append("upload_preset", "nepal-mart");
+              data.append("cloud_name", cloudName);
+
+              try {
+                setImageLoading(true);
+                const res = await axios.post(
+                  `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+                  data
+                );
+
+                imageUrl = res.data.secure_url;
+                setImageLoading(false);
+              } catch (error) {
+                setImageLoading(false);
+                dispatch(openErrorSnackbar("Image upload failed."));
+              }
+            }
+
+            values.imageUrl = imageUrl;
             editProductMutation.mutate(values);
           }}
         >
@@ -130,6 +170,29 @@ const EditProduct = () => {
                 minWidth: "350px",
               }}
             >
+              <img
+                src={localURL || productDetails?.imageUrl || placeHolderImage}
+                style={{
+                  width: "100%",
+                  minHeight: "200px",
+                  objectFit: "cover",
+                }}
+              />
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Button variant="outlined" component="label">
+                  Upload image
+                  <input
+                    hidden
+                    accept="image/*"
+                    type="file"
+                    onChange={(event) => {
+                      const productImage = event.target.files[0];
+                      setLocalURL(URL.createObjectURL(productImage));
+                      setProductImage(productImage);
+                    }}
+                  />
+                </Button>
+              </Stack>
               <TextField
                 sx={{ width: "100%" }}
                 name="name"
@@ -209,11 +272,31 @@ const EditProduct = () => {
                   {...getFieldProps("freeShipping")}
                 />
               </Grid>
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TextareaAutosize
+                  placeholder="Product description here"
+                  minRows={10}
+                  className="product-description"
+                  {...getFieldProps("description")}
+                />
+              </Grid>
+              {touched.description && errors.description ? (
+                <div className="error-message">{errors.description}</div>
+              ) : null}
 
               <Button
                 type="submit"
                 variant="contained"
                 sx={{ width: "100%", padding: "7px" }}
+                disabled={editProductMutation?.isLoading || imageLoading}
               >
                 Submit
               </Button>

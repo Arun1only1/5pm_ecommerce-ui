@@ -12,6 +12,7 @@ import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { deleteSellerProduct } from "../lib/apis/product.apis";
+import { placeHolderImage } from "../constants/general.constant";
 
 export default function ProductCard(props) {
   const userRole = localStorage.getItem("userRole");
@@ -20,7 +21,7 @@ export default function ProductCard(props) {
 
   const queryClient = useQueryClient();
 
-  const { _id, name, price, category, company } = props;
+  const { _id, name, price, category, company, description, imageUrl } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -83,17 +84,17 @@ export default function ProductCard(props) {
           </Stack>
         </Grid>
       </Popover>
-      <Card sx={{ width: "25%", height: "400px" }}>
+      <Card sx={{ width: "25%", minHeight: "400px" }}>
         <CardMedia
           onClick={() => navigate(`/products/details/${_id}`)}
           component="img"
-          alt="green iguana"
-          height="140"
-          image="https://www.rei.com/dam/content_team_010818_52427_htc_running_shoes_hero2_lg.jpg?t=ea16by9xs"
+          alt={name}
+          image={imageUrl || placeHolderImage}
+          height={300}
           sx={{
-            objectFit: "contain",
+            objectFit: "cover",
             cursor: "pointer",
-            padding: "1rem",
+
             width: "100%",
           }}
         />
@@ -115,8 +116,7 @@ export default function ProductCard(props) {
             Rs.{price}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+            {description.slice(0, 150)}...
           </Typography>
         </CardContent>
         <CardActions>

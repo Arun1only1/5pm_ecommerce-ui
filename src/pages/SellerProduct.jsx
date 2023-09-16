@@ -60,7 +60,7 @@ const SellerProduct = () => {
 
       {!getSellerProductQuery.isLoading &&
       getSellerProductQuery.data.data.products.length === 0 ? (
-        <NoItemFound />
+        <NoItemFound message="No product found" />
       ) : (
         <>
           <Grid>

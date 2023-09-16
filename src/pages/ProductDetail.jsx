@@ -1,20 +1,30 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Chip, Grid, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { $axios } from "../lib/axios";
 import Loader from "../components/Loader";
 import { GrAdd } from "react-icons/gr";
 import { AiOutlineMinus } from "react-icons/ai";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { addItemToCart } from "../lib/apis/cart.api";
+import { useDispatch } from "react-redux";
+import {
+  openErrorSnackbar,
+  openSuccessSnackbar,
+} from "../store/slices/snackbarSlice";
+import { placeHolderImage } from "../constants/general.constant";
+
 const ProductDetail = () => {
   const userRole = localStorage.getItem("userRole");
   const [productDetail, setProductDetail] = useState({});
   const [counter, setCounter] = useState(1);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+
+  const queryClient = useQueryClient();
 
   //   extract id
   const params = useParams();
@@ -24,6 +34,19 @@ const ProductDetail = () => {
   const addItemToCartMutation = useMutation({
     mutationKey: ["add-item-to-cart"],
     mutationFn: () => addItemToCart({ productId, quantity: counter }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries("cart-item-count");
+      dispatch(
+        openSuccessSnackbar(res?.data?.message || "Item added to cart.")
+      );
+    },
+    onError: (error) => {
+      dispatch(
+        openErrorSnackbar(
+          error?.response?.data?.message || "Item cannot be added to cart."
+        )
+      );
+    },
   });
 
   const getProductDetails = async () => {
@@ -63,7 +86,8 @@ const ProductDetail = () => {
       <Grid container>
         <img
           style={{ height: 500, width: 600, objectFit: "cover" }}
-          src="https://images.samsung.com/is/image/samsung/ph-hdtv-n4003-ua32n4003arxxp-frontblack-100425777?$650_519_PNG$"
+          alt={productDetail?.name}
+          src={productDetail?.imageUrl || placeHolderImage}
         />
       </Grid>
       <Grid
@@ -77,43 +101,48 @@ const ProductDetail = () => {
           fontSize: "1.5rem",
         }}
       >
-        <Grid item>Name: {productDetail.name}</Grid>
-        <Grid item>Brand: {productDetail.company}</Grid>
-        <Grid item>Price: Rs.{productDetail.price}</Grid>
         <Grid item>
-          Description: An electronic system of transmitting transient images of
-          fixed or moving objects together with sound over a wire or through
-          space by apparatus that converts light and sound into electrical waves
-          and reconverts them into visible light rays and audible sound.
+          <Typography variant="h6">Name: {productDetail.name}</Typography>
         </Grid>
         <Grid item>
-          Free shipping: {productDetail.freeShipping === true ? "Yes" : "No"}
+          <Typography variant="h6">Brand: {productDetail.company}</Typography>
         </Grid>
-        <Grid item>Available Quantity:{productDetail.quantity}</Grid>
+        <Grid item>
+          <Typography variant="h6">Price: Rs.{productDetail.price}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="h6">
+            Description:{productDetail.description}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="h6">
+            Free shipping: {productDetail.freeShipping === true ? "Yes" : "No"}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Stack direction="row" spacing={2}>
+            <Typography variant="h6">
+              Available Quantity:{productDetail.quantity}
+            </Typography>
+            <Chip
+              label={productDetail.quantity ? "In stock" : "Out of stock"}
+              color={productDetail.quantity ? "success" : "error"}
+              variant="outlined"
+            />
+          </Stack>
+        </Grid>
         <Grid item sx={{ textTransform: "capitalize" }}>
-          Category:{productDetail.category}
+          <Typography variant="h6">
+            Category:{productDetail.category}
+          </Typography>
         </Grid>
 
         {userRole === "buyer" && (
           <>
             <Grid item sx={{ display: "flex", gap: "1rem" }}>
-              <Typography sx={{ fontSize: "1.5rem" }}>
-                Number of items
-              </Typography>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  const newCount = counter + 1;
-                  if (newCount >= productDetail.quantity) {
-                    setCounter(productDetail.quantity);
-                  } else {
-                    setCounter(newCount);
-                  }
-                }}
-              >
-                <GrAdd size={30} />
-              </Button>
-              <Typography variant="h3">{counter}</Typography>
+              <Typography variant="h6">Number of items</Typography>
+
               <Button
                 variant="outlined"
                 onClick={() => {
@@ -127,6 +156,20 @@ const ProductDetail = () => {
                 }}
               >
                 <AiOutlineMinus size={30} />
+              </Button>
+              <Typography variant="h3">{counter}</Typography>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  const newCount = counter + 1;
+                  if (newCount >= productDetail.quantity) {
+                    setCounter(productDetail.quantity);
+                  } else {
+                    setCounter(newCount);
+                  }
+                }}
+              >
+                <GrAdd size={30} />
               </Button>
             </Grid>
             <Grid item>

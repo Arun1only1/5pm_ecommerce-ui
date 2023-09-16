@@ -53,7 +53,7 @@ const BuyerProduct = () => {
   return (
     <Box sx={{ marginTop: "2rem" }}>
       {!isLoading && data?.data?.products?.length === 0 ? (
-        <NoItemFound />
+        <NoItemFound message="No product found" />
       ) : (
         <>
           <Grid>

@@ -10,10 +10,9 @@ export default function CustomBreadCrumb() {
     <Box
       role="presentation"
       sx={{
-        border: "1px solid black",
         width: "100%",
         padding: "1rem",
-        marginTop: "3rem",
+        marginTop: "5rem",
         backgroundColor: "#5C5470",
       }}
     >

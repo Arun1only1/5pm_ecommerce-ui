@@ -7,10 +7,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   TextField,
+  TextareaAutosize,
 } from "@mui/material";
 import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +23,7 @@ import {
   openSuccessSnackbar,
 } from "../store/slices/snackbarSlice";
 import Loader from "./Loader";
+import axios from "axios";
 
 const productCategories = [
   "grocery",
@@ -34,7 +37,9 @@ const productCategories = [
 ];
 
 const AddProductForm = () => {
+  const [localURL, setLocalURL] = useState(null);
   const navigate = useNavigate();
+  const [productImage, setProductImage] = useState(null);
 
   const dispatch = useDispatch();
   const addProductMutation = useMutation({
@@ -64,6 +69,8 @@ const AddProductForm = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+
+        width: "100%",
       }}
     >
       <Button
@@ -97,6 +104,7 @@ const AddProductForm = () => {
             freeShipping: false,
             quantity: 0,
             category: "",
+            description: "",
           }}
           validationSchema={Yup.object({
             name: Yup.string()
@@ -121,8 +129,34 @@ const AddProductForm = () => {
               .trim()
               .required("Category is required.")
               .oneOf(productCategories),
+            description: Yup.string()
+              .min(200, "Description must be at least 200 characters.")
+              .max(1000, "Description must be at most 1000 characters.")
+              .required("Description is required."),
           })}
           onSubmit={async (values) => {
+            let imageUrl = "";
+            if (productImage) {
+              const cloudName = "dlkcko4n6";
+              // creates form data object
+              const data = new FormData();
+              data.append("file", productImage);
+              data.append("upload_preset", "nepal-mart");
+              data.append("cloud_name", cloudName);
+
+              try {
+                const res = await axios.post(
+                  `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+                  data
+                );
+
+                imageUrl = res.data.secure_url;
+              } catch (error) {
+                dispatch(openErrorSnackbar("Image upload failed."));
+              }
+            }
+
+            values.imageUrl = imageUrl;
             addProductMutation.mutate(values);
           }}
         >
@@ -139,6 +173,28 @@ const AddProductForm = () => {
                 minWidth: "350px",
               }}
             >
+              {localURL && (
+                <img
+                  src={localURL}
+                  style={{ width: "100%", minHeight: 200, objectFit: "cover" }}
+                />
+              )}
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Button variant="outlined" component="label">
+                  Upload image
+                  <input
+                    hidden
+                    accept="image/*"
+                    type="file"
+                    onChange={(event) => {
+                      const productImage = event.target.files[0];
+                      setLocalURL(URL.createObjectURL(productImage));
+                      setProductImage(productImage);
+                    }}
+                  />
+                </Button>
+              </Stack>
+
               <TextField
                 sx={{ width: "100%" }}
                 name="name"
@@ -218,8 +274,26 @@ const AddProductForm = () => {
                   {...getFieldProps("freeShipping")}
                 />
               </Grid>
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TextareaAutosize
+                  placeholder="Product description here"
+                  minRows={10}
+                  className="product-description"
+                  {...getFieldProps("description")}
+                />
+              </Grid>
+              {touched.description && errors.description ? (
+                <div className="error-message">{errors.description}</div>
+              ) : null}
 
-              {/* {console.log({ values })} */}
               <Button
                 type="submit"
                 variant="contained"
