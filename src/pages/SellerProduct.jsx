@@ -31,6 +31,7 @@ const SellerProduct = () => {
 
   if (getSellerProductQuery?.isError) {
     dispatch(openErrorSnackbar("Product cannot be fetched at this time."));
+    return;
   }
 
   if (getSellerProductQuery.isLoading) {
