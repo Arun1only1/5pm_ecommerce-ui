@@ -26,13 +26,10 @@ const SellerProduct = () => {
     queryKey: ["seller-products", { page, searchText: searchText }],
     queryFn: () =>
       fetchSellerProducts({ page, limit: 10, searchText: searchText || "" }),
-    keepPreviousData: true,
+    onError: (error) => {
+      dispatch(openErrorSnackbar("Product cannot be fetched at this time."));
+    },
   });
-
-  if (getSellerProductQuery?.isError) {
-    dispatch(openErrorSnackbar("Product cannot be fetched at this time."));
-    return;
-  }
 
   if (getSellerProductQuery.isLoading) {
     return <Loader />;
@@ -60,6 +57,7 @@ const SellerProduct = () => {
       </Grid>
 
       {!getSellerProductQuery.isLoading &&
+      !getSellerProductQuery.isError &&
       getSellerProductQuery.data.data.products.length === 0 ? (
         <NoItemFound message="No product found" />
       ) : (
