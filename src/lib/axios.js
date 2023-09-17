@@ -1,7 +1,10 @@
 import axios from "axios";
 
 export const $axios = axios.create({
-  baseURL: "http://localhost:8001",
+  baseURL:
+    import.meta.env.VITE_ENV === "prod"
+      ? import.meta.env.VITE_PROD_API
+      : import.meta.env.VITE_LOCAL_API,
   timeout: 1000,
 });
 
