@@ -5,7 +5,7 @@ export const $axios = axios.create({
     import.meta.env.VITE_ENV === "prod"
       ? import.meta.env.VITE_PROD_API
       : import.meta.env.VITE_LOCAL_API,
-  timeout: 1000,
+  timeout: 5000,
 });
 
 $axios.interceptors.request.use(function (config) {
