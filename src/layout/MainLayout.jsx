@@ -24,8 +24,9 @@ const MainLayout = () => {
   return (
     <Box>
       <CustomSnackbar />
+      <Header />
 
-      <CustomAppBar />
+      {/* <CustomAppBar /> */}
       <CustomBreadCrumb />
 
       <Grid container sx={{ minHeight: "65vh" }}>
