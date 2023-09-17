@@ -153,7 +153,10 @@ const EditProduct = () => {
               }
             }
 
-            values.imageUrl = imageUrl;
+            if (imageUrl) {
+              values.imageUrl = imageUrl;
+            }
+
             editProductMutation.mutate(values);
           }}
         >
