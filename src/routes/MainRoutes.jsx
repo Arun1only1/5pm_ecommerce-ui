@@ -41,7 +41,7 @@ const mainRoutes = [
         path: "cart",
         element: <Cart />,
       },
-      { path: "/product/edit/:id", element: <EditProduct /> },
+      { path: "/products/edit/:id", element: <EditProduct /> },
     ],
   },
 ];

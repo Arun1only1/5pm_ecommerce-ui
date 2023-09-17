@@ -191,7 +191,7 @@ const ProductDetail = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                navigate(`/product/edit/${productId}`);
+                navigate(`/products/edit/${productId}`);
               }}
             >
               Edit product
