@@ -16,16 +16,25 @@ const Product = () => {
       <Grid
         sx={{
           display: "flex",
+          flexDirection: {
+            xs: "column",
+            sm: "row",
+          },
+
           justifyContent: "flex-end",
           marginTop: "2rem",
-          marginRight: "7rem",
+
           alignItems: "center",
           gap: "2rem",
         }}
       >
         {role === "buyer" && (
           <>
-            <Button variant="contained" onClick={() => dispatch(resetFilter())}>
+            <Button
+              variant="contained"
+              onClick={() => dispatch(resetFilter())}
+              sx={{ width: { xs: "100%", sm: "15%" } }}
+            >
               Clear Filter
             </Button>
             <ProductFilter />
@@ -33,7 +42,12 @@ const Product = () => {
         )}
 
         <TextField
-          sx={{ width: "20vw" }}
+          sx={{
+            width: {
+              xs: "100%",
+              sm: "30%",
+            },
+          }}
           placeholder="Search"
           onChange={(event) => dispatch(setSearchText(event.target.value))}
           // TODO:place icon here

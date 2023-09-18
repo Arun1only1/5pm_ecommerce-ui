@@ -23,3 +23,7 @@ export const getProductDetails = async (id) => {
 export const editProduct = async (productId, values) => {
   return await $axios.put(`/product/edit/${productId}`, values);
 };
+
+export const getLatestProducts = async (count = 5) => {
+  return await $axios.get(`/product/latest/${count}`);
+};

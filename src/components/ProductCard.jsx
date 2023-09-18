@@ -9,13 +9,15 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { Chip, Grid, Popover, Stack } from "@mui/material";
 import { $axios } from "../lib/axios";
 import Loader from "./Loader";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { deleteSellerProduct } from "../lib/apis/product.apis";
 import { placeHolderImage } from "../constants/general.constant";
 
 export default function ProductCard(props) {
   const userRole = localStorage.getItem("userRole");
+  const { pathname } = useLocation();
+  console.log(pathname);
 
   const navigate = useNavigate();
 
@@ -84,7 +86,16 @@ export default function ProductCard(props) {
           </Stack>
         </Grid>
       </Popover>
-      <Card sx={{ width: "25%", minHeight: "400px" }}>
+      <Card
+        sx={{
+          width: {
+            xs: "100%",
+            sm: "30%",
+          },
+
+          minHeight: "400px",
+        }}
+      >
         <CardMedia
           onClick={() => navigate(`/products/details/${_id}`)}
           component="img"
@@ -120,7 +131,7 @@ export default function ProductCard(props) {
           </Typography>
         </CardContent>
         <CardActions>
-          {userRole === "seller" && (
+          {userRole === "seller" && pathname !== "/home" && (
             <Button size="small" onClick={(event) => handleClick(event)}>
               <AiOutlineDelete size={30} color="success" />
             </Button>

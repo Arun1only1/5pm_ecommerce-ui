@@ -35,6 +35,7 @@ const Login = () => {
       localStorage.setItem("userRole", res?.data?.user?.role);
       localStorage.setItem("userName", res?.data?.user?.firstName);
       localStorage.setItem("isLoggedIn", true);
+      localStorage.setItem("userId", res?.data?.user?._id);
       navigate("/home");
       dispatch(openSuccessSnackbar("You are logged in successfully."));
     },

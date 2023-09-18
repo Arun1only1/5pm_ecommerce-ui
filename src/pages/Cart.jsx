@@ -88,12 +88,20 @@ const Cart = () => {
   return (
     <>
       {cartData?.length <= 0 ? (
-        <>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
           <NoItemFound message="Nothing in your cart" />
           <Button onClick={() => navigate("/products")} variant="contained">
             Start shopping
           </Button>
-        </>
+        </Box>
       ) : (
         <Box
           sx={{

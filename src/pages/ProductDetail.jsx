@@ -1,4 +1,12 @@
-import { Box, Button, Chip, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Stack,
+  Typography,
+  circularProgressClasses,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { $axios } from "../lib/axios";
@@ -20,6 +28,10 @@ const ProductDetail = () => {
   const [counter, setCounter] = useState(1);
   const dispatch = useDispatch();
 
+  const loggedInUserId = localStorage.getItem("userId");
+
+  const isOwnerOfProduct = loggedInUserId === productDetail?.sellerId;
+  console.log({ isOwnerOfProduct });
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -186,7 +198,7 @@ const ProductDetail = () => {
           </>
         )}
 
-        {userRole === "seller" && (
+        {userRole === "seller" && isOwnerOfProduct && (
           <Grid item>
             <Button
               variant="outlined"

@@ -45,11 +45,30 @@ const SellerProduct = () => {
           marginBottom: "4rem",
         }}
       >
-        <Grid item>
+        <Grid
+          item
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: {
+              xs: "center",
+              sm: "flex-end",
+            },
+          }}
+        >
           <Button
             variant="contained"
             onClick={() => navigate("/products/add")}
-            sx={{ marginRight: "5rem" }}
+            sx={{
+              marginRight: {
+                xs: 0,
+                sm: "5rem",
+              },
+              width: {
+                xs: "90%",
+                sm: "10%",
+              },
+            }}
           >
             Add product
           </Button>
