@@ -27,5 +27,9 @@ export const useBreadcrumbTitle = (pathname) => {
     data = ["product", "cart"];
   }
 
+  if (pathname.includes("/products/edit")) {
+    data = ["products", "edit"];
+  }
+
   return data;
 };
